@@ -41,7 +41,7 @@ resource "azurerm_resource_group" "azure_rg" {
   location = var.azure_region
 }
 
-// Azure VPN Gateway (for connectivity to Alibaba and On-Prem)
+// Azure Virtual Network Gateway (for connectivity to Alibaba and On-Prem)
 resource "azurerm_virtual_network" "azure_vnet" {
   name                = "gitops-starter-vnet"
   resource_group_name = azurerm_resource_group.azure_rg.name
@@ -64,12 +64,16 @@ resource "azurerm_public_ip" "azure_vpn_ip" {
   sku                 = "Standard"
 }
 
-resource "azurerm_vpn_gateway" "azure_vpn" {
+resource "azurerm_virtual_network_gateway" "azure_vpn" {
   name                = "gitops-starter-vpn-gateway"
   resource_group_name = azurerm_resource_group.azure_rg.name
   location            = azurerm_resource_group.azure_rg.location
 
   type = "Vpn"
+  vpn_type = "RouteBased"
+  active_active = false
+  enable_bgp    = false
+  sku           = "VpnGw1"
 
   ip_configuration {
     name                          = "vnetGatewayConfig"
@@ -86,7 +90,6 @@ resource "alicloud_vpc" "alibaba_vpc" {
   name              = "gitops-starter-vpc"
   cidr_block        = var.alibaba_vpc_cidr
   enable_ipv6       = false
-  enable_ipv4       = true
   resource_group_id = null
 }
 
@@ -161,7 +164,7 @@ output "kafka_config" {
 // ============= Outputs =============
 
 output "azure_vpn_gateway_id" {
-  value = azurerm_vpn_gateway.azure_vpn.id
+  value = azurerm_virtual_network_gateway.azure_vpn.id
 }
 
 output "alibaba_vpn_gateway_id" {
