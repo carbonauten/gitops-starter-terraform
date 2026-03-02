@@ -182,8 +182,8 @@ output "azure_datalake_storage_account_id" {
 
 output "azure_datalake_primary_endpoints" {
   value = {
-    dfs   = azurerm_storage_account.datalake.primary_dfs_endpoint
-    blob  = azurerm_storage_account.datalake.primary_blob_endpoint
+    dfs  = azurerm_storage_account.datalake.primary_dfs_endpoint
+    blob = azurerm_storage_account.datalake.primary_blob_endpoint
   }
 }
 
