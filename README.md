@@ -19,3 +19,5 @@ terraform apply
 
 Make sure to set/override the variables defined in `variables.tf` (e.g. subscription IDs, regions, CIDRs, and credentials) before applying.
 
+CI on GitHub (see `.github/workflows/terraform-ci.yml`) automatically runs `terraform fmt`, `terraform init -backend=false`, and `terraform validate` on each push and pull request to `main`.
+
