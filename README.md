@@ -19,5 +19,7 @@ terraform apply
 
 Make sure to set/override the variables defined in `variables.tf` (e.g. subscription IDs, regions, CIDRs, and credentials) before applying.
 
-CI on GitHub (see `.github/workflows/terraform-ci.yml`) automatically runs `terraform fmt`, `terraform init -backend=false`, and `terraform validate` on each push and pull request to `main`.
+CI on GitHub (see `.github/workflows/terraform-ci.yml`) automatically runs `terraform init -backend=false` and `terraform validate` on each push and pull request to `main`.
+
+The **data pipeline consumer** (Kafka consumer) is deployed separately via [gitops-starter](https://github.com/carbonauten/gitops-starter) (Helm chart `gitops/charts/datapipeline-consumer` and Argo CD). This Terraform repo only provisions the underlying cloud and data lake resources.
 
