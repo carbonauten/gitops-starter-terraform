@@ -11,6 +11,7 @@ Contains multi-cloud infrastructure scaffolding for:
 To use:
 
 ```bash
+cd gitops-starter-terraform
 terraform init
 terraform plan
 terraform apply
