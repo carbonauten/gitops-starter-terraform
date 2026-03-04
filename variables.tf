@@ -1,9 +1,3 @@
-variable "aws_region" {
-  description = "AWS region"
-  type        = string
-  default     = "eu-central-1"
-}
-
 // ===== Azure Variables =====
 variable "azure_subscription_id" {
   description = "Azure subscription ID"
@@ -20,6 +14,12 @@ variable "azure_vnet_cidr" {
   description = "CIDR block for Azure VNet"
   type        = string
   default     = "10.0.0.0/16"
+}
+
+variable "azure_blob_storage_account_name" {
+  description = "Azure Blob Storage account name (3-24 chars, lowercase alphanumeric; must be globally unique)"
+  type        = string
+  default     = "gitopsblobdev"
 }
 
 // ===== Alibaba Cloud Variables =====
