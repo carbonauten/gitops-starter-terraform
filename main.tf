@@ -62,10 +62,10 @@ resource "azurerm_virtual_network_gateway" "azure_vpn" {
   resource_group_name = azurerm_resource_group.azure_rg.name
   location            = azurerm_resource_group.azure_rg.location
 
-  type = "Vpn"
-  vpn_type = "RouteBased"
+  type          = "Vpn"
+  vpn_type      = "RouteBased"
   active_active = false
-  bgp_enabled    = false
+  bgp_enabled   = false
   sku           = "VpnGw1"
 
   ip_configuration {
@@ -80,9 +80,9 @@ resource "azurerm_virtual_network_gateway" "azure_vpn" {
 
 // Alibaba Cloud VPC and VPN Gateway
 resource "alicloud_vpc" "alibaba_vpc" {
-  vpc_name        = "gitops-starter-vpc"
-  cidr_block      = var.alibaba_vpc_cidr
-  enable_ipv6     = false
+  vpc_name          = "gitops-starter-vpc"
+  cidr_block        = var.alibaba_vpc_cidr
+  enable_ipv6       = false
   resource_group_id = null
 }
 
@@ -153,13 +153,13 @@ resource "azurerm_storage_account" "blob" {
 
 resource "azurerm_storage_container" "blob_data" {
   name                  = "data"
-  storage_account_name  = azurerm_storage_account.blob.name
+  storage_account_id    = azurerm_storage_account.blob.id
   container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "blob_uploads" {
   name                  = "uploads"
-  storage_account_name  = azurerm_storage_account.blob.name
+  storage_account_id    = azurerm_storage_account.blob.id
   container_access_type = "private"
 }
 
