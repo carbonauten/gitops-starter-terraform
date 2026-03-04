@@ -65,7 +65,7 @@ resource "azurerm_virtual_network_gateway" "azure_vpn" {
   type = "Vpn"
   vpn_type = "RouteBased"
   active_active = false
-  enable_bgp    = false
+  bgp_enabled    = false
   sku           = "VpnGw1"
 
   ip_configuration {
@@ -80,28 +80,28 @@ resource "azurerm_virtual_network_gateway" "azure_vpn" {
 
 // Alibaba Cloud VPC and VPN Gateway
 resource "alicloud_vpc" "alibaba_vpc" {
-  name              = "gitops-starter-vpc"
-  cidr_block        = var.alibaba_vpc_cidr
-  enable_ipv6       = false
+  vpc_name        = "gitops-starter-vpc"
+  cidr_block      = var.alibaba_vpc_cidr
+  enable_ipv6     = false
   resource_group_id = null
 }
 
 resource "alicloud_vpn_gateway" "alibaba_vpn" {
-  name                 = "gitops-starter-vpn-gateway"
-  vpc_id               = alicloud_vpc.alibaba_vpc.id
-  bandwidth            = 5
-  enable_ssl           = true
-  enable_ipsec         = true
-  instance_charge_type = "PostPaid"
+  vpn_gateway_name = "gitops-starter-vpn-gateway"
+  vpc_id           = alicloud_vpc.alibaba_vpc.id
+  bandwidth        = 5
+  enable_ssl       = true
+  enable_ipsec     = true
+  payment_type     = "PayAsYouGo"
 
   depends_on = [alicloud_vpc.alibaba_vpc]
 }
 
 // Alibaba ECS Security Group
 resource "alicloud_security_group" "alibaba_sg" {
-  name        = "gitops-starter-sg"
-  description = "Security group for Alibaba ECS"
-  vpc_id      = alicloud_vpc.alibaba_vpc.id
+  security_group_name = "gitops-starter-sg"
+  description         = "Security group for Alibaba ECS"
+  vpc_id              = alicloud_vpc.alibaba_vpc.id
 }
 
 // ============= Data Lake (ADLS Gen2 + Alibaba OSS) =============
@@ -166,7 +166,6 @@ resource "azurerm_storage_container" "blob_uploads" {
 // Alibaba Cloud Object Storage Service (OSS)
 resource "alicloud_oss_bucket" "datalake" {
   bucket = "gitops-starter-datalake-${var.environment}"
-  acl    = "private"
   server_side_encryption_rule {
     sse_algorithm = "AES256"
   }
@@ -174,6 +173,11 @@ resource "alicloud_oss_bucket" "datalake" {
   versioning {
     status = "Enabled"
   }
+}
+
+resource "alicloud_oss_bucket_acl" "datalake" {
+  bucket = alicloud_oss_bucket.datalake.id
+  acl    = "private"
 }
 
 // ============= Kafka + MirrorMaker 2 (Bridge) =============
