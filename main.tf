@@ -12,13 +12,6 @@ terraform {
       version = ">= 1.200"
     }
   }
-
-  # Example S3 remote state backend (uncomment and configure)
-  # backend "s3" {
-  #   bucket = "<your-terraform-state-bucket>"
-  #   key    = "gitops-starter/terraform.tfstate"
-  #   region = "eu-central-1"
-  # }
 }
 
 // Azure Provider (Europe)
@@ -139,6 +132,37 @@ resource "azurerm_storage_data_lake_gen2_filesystem" "raw" {
   storage_account_id = azurerm_storage_account.datalake.id
 }
 
+// Azure Blob Storage (standard blob account + containers)
+resource "azurerm_storage_account" "blob" {
+  name                     = var.azure_blob_storage_account_name
+  resource_group_name      = azurerm_resource_group.azure_rg.name
+  location                 = azurerm_resource_group.azure_rg.location
+  account_tier             = "Standard"
+  account_replication_type = "GRS"
+  account_kind             = "StorageV2"
+
+  network_rules {
+    default_action = "Deny"
+    bypass         = ["AzureServices"]
+  }
+
+  blob_properties {
+    versioning_enabled = true
+  }
+}
+
+resource "azurerm_storage_container" "blob_data" {
+  name                  = "data"
+  storage_account_name  = azurerm_storage_account.blob.name
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_container" "blob_uploads" {
+  name                  = "uploads"
+  storage_account_name  = azurerm_storage_account.blob.name
+  container_access_type = "private"
+}
+
 // Alibaba Cloud Object Storage Service (OSS)
 resource "alicloud_oss_bucket" "datalake" {
   bucket = "gitops-starter-datalake-${var.environment}"
@@ -188,6 +212,21 @@ output "azure_datalake_primary_endpoints" {
     dfs  = azurerm_storage_account.datalake.primary_dfs_endpoint
     blob = azurerm_storage_account.datalake.primary_blob_endpoint
   }
+}
+
+output "azure_blob_storage_account_id" {
+  value       = azurerm_storage_account.blob.id
+  description = "Azure Blob Storage account resource ID"
+}
+
+output "azure_blob_primary_endpoint" {
+  value       = azurerm_storage_account.blob.primary_blob_endpoint
+  description = "Azure Blob Storage primary blob endpoint"
+}
+
+output "azure_blob_container_names" {
+  value       = [azurerm_storage_container.blob_data.name, azurerm_storage_container.blob_uploads.name]
+  description = "Names of the blob containers (data, uploads)"
 }
 
 output "alibaba_oss_bucket_name" {

@@ -4,7 +4,7 @@ Standalone Terraform configuration extracted from the `gitops-starter` repositor
 
 Contains multi-cloud infrastructure scaffolding for:
 
-- Azure: resource group, VNet, VPN gateway, Data Lake (ADLS Gen2)
+- Azure: resource group, VNet, VPN gateway, Data Lake (ADLS Gen2), **Blob Storage** (standard account with containers `data` and `uploads`, versioning, private access)
 - Alibaba Cloud: VPC, VPN gateway, security group, OSS-based data lake
 - Outputs that describe VPN gateways, VNet/VPC IDs, and data lake endpoints.
 
